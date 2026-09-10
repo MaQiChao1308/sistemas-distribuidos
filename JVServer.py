@@ -66,13 +66,11 @@ class ServidorJogo:
         print("[SISTEMA] Estrutura de dados do servidor iniciada.")
 
     def iniciar_jogo(self, jogador_uri, nome):
-        """
-        Recebe a conexão de um jogador, armazenando sua URI e Nome na fila.
-        Quando dois jogadores estão disponíveis, inicia uma thread de partida independente.
+        # Recebe a conexão de um jogador, armazenando sua URI e Nome na fila.
+        # Quando dois jogadores estão disponíveis, inicia uma thread de partida independente.
+        # jogador_uri: Endereço do objeto remoto do cliente (Pyro URI).
+        # nome: Nome de exibição do jogador.
         
-        :param jogador_uri: Endereço do objeto remoto do cliente (Pyro URI).
-        :param nome: Nome de exibição do jogador.
-        """
         # ==========================================
         # CONCORRÊNCIA DO PYRO5 (Ownership):
         # Não instanciamos o Proxy() aqui na thread principal. 
@@ -101,12 +99,9 @@ class ServidorJogo:
     # 3. MÁQUINA DE ESTADOS DA PARTIDA
     # ==========================================
     def _partida(self, p1, p2):
-        """
-        Controla a partida entre dois jogadores em uma thread dedicada.
-        
-        :param p1: Tupla (uri1, nome1) do primeiro jogador.
-        :param p2: Tupla (uri2, nome2) do segundo jogador.
-        """
+        # Controla a partida entre dois jogadores em uma thread dedicada.
+        # p1: Tupla (uri1, nome1) do primeiro jogador.
+        # p2: Tupla (uri2, nome2) do segundo jogador.
         uri1, nome1 = p1
         uri2, nome2 = p2
         # ==========================================

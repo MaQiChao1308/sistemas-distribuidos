@@ -11,11 +11,9 @@ import threading
 @Pyro5.api.expose
 class Jogador:
     def __init__(self, nome):
-        """
-        Inicializa o jogador local expondo-o para RPC.
+        # Inicializa o jogador local expondo-o para RPC.
+        # nome: Nome do jogador informado no terminal.
         
-        :param nome: Nome do jogador informado no terminal.
-        """
         # SISTEMA DE SINCRONIZAÇÃO DE DUPLO EVENTO (Semáforos binários):
         
         # Sinaliza para a Main Thread (CLI) que é o momento de ler o teclado.
