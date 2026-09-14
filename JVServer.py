@@ -1,7 +1,5 @@
-"""
-Created on Wed Sep  9 14:45:37 2026
-@author: massa
-"""
+# Created on Wed Sep  9 14:45:37 2026
+# @author: massa
 import Pyro5.api
 import threading
 
@@ -50,6 +48,9 @@ class Tabuleiro:
         return all(cell != " " for row in self.tabuleiro for cell in row)
 
 
+# Configuração global de timeout do Pyro5 para evitar bloqueios indefinidos em sockets inativos
+Pyro5.config.COMMTIMEOUT = 45.0
+
 # ==========================================
 # 2. DECOMPOSIÇÃO: GERENCIAMENTO DE REDE
 # ==========================================
@@ -78,21 +79,37 @@ class ServidorJogo:
         # a thread da partida (que roda em background) não terá permissão para usá-lo.
         # Por isso, guardamos apenas a STRING (URI) na fila.
         # ==========================================
-        print(f"[REDE] Novo jogador conectado. {nome} URI: {jogador_uri}")
+        print(f"[REDE] Novo jogador conectado: '{nome}' (URI: {jogador_uri})")
         
         # Seção Crítica: O Lock garante que apenas uma thread altere a fila por vez
         with self.lock:
             self.fila.append((jogador_uri, nome))
             
-            # Algoritmo de emparelhamento: a cada 2 jogadores, retira da fila e inicia a partida
+            # Algoritmo de emparelhamento com verificação de liveness
             if len(self.fila) >= 2:
-                p1 = self.fila.pop(0)
-                p2 = self.fila.pop(0)
-                print(f"Partida encontrada: {p1[1]} vs {p2[1]}. Iniciando...")
-                
-                # A partida roda em uma nova Thread, recebendo os dados dos jogadores (p1, p2).
-                # daemon=True assegura que se o servidor cair, as threads filhas morrem.
-                threading.Thread(target=self._partida, args=(p1, p2), daemon=True).start()
+                jogadores_ativos = []
+                while self.fila and len(jogadores_ativos) < 2:
+                    candidato = self.fila.pop(0)
+                    try:
+                        # Validação rápida de conectividade antes de criar a partida
+                        teste = Pyro5.api.Proxy(candidato[0])
+                        teste._pyroTimeout = 3.0
+                        teste.ping()
+                        teste._pyroRelease()
+                        jogadores_ativos.append(candidato)
+                    except Exception:
+                        print(f"[AVISO] Jogador '{candidato[1]}' desconectou enquanto aguardava na fila.")
+
+                if len(jogadores_ativos) == 2:
+                    p1 = jogadores_ativos[0]
+                    p2 = jogadores_ativos[1]
+                    print(f"[SISTEMA] Partida formada: {p1[1]} vs {p2[1]}. Iniciando...")
+                    
+                    # A partida roda em uma nova Thread dedicada, recebendo os dados dos jogadores (p1, p2).
+                    threading.Thread(target=self._partida, args=(p1, p2), daemon=True).start()
+                elif len(jogadores_ativos) == 1:
+                    # Devolve o jogador remanescente para o topo da fila
+                    self.fila.insert(0, jogadores_ativos[0])
 
 
     # ==========================================
@@ -104,76 +121,191 @@ class ServidorJogo:
         # p2: Tupla (uri2, nome2) do segundo jogador.
         uri1, nome1 = p1
         uri2, nome2 = p2
-        # ==========================================
+        
         # CONCORRÊNCIA DO PYRO5 (Ownership):
         # Os proxies são instanciados AQUI, dentro da thread que vai 
         # efetivamente usá-los para se comunicar com os clientes via RPC.
-        # ==========================================
         j1 = Pyro5.api.Proxy(uri1)
         j2 = Pyro5.api.Proxy(uri2)
-        
-        tab = Tabuleiro()
-        # Mapeamento estático dos papéis e nomes de cada jogador
-        jogadores = [(j1, "X", nome1), (j2, "O", nome2)]
+        j1._pyroTimeout = 45.0
+        j2._pyroTimeout = 45.0
+
+        # Sistema de pontuação contínua (Revanche)
+        placar = {nome1: 0, nome2: 0, "empates": 0}
+        inicio_rodada = 0 # Alterna quem começa a cada rodada
+
+        # Função auxiliar para tratar desconexão e declarar vitória por W.O.
+        def tratar_wo(desconectado_nome, oponente_proxy, oponente_nome):
+            print(f"[TOLERÂNCIA A FALHAS] Desconexão de '{desconectado_nome}'. Declarando W.O. para '{oponente_nome}'.")
+            try:
+                oponente_proxy.receber_mensagem(f"\n[AVISO] Oponente '{desconectado_nome}' desconectou. Você venceu por W.O.!")
+                oponente_proxy.finalizar()
+            except Exception:
+                pass
 
         try:
-            # Envia a mensagem de boas-vindas
-            for jogador, simbolo, nome_proprio in jogadores:
-                outro_nome = nome2 if simbolo == "X" else nome1
-                jogador.receber_mensagem(f"\n--- A partida começou! Você joga com '{simbolo}' contra '{outro_nome}' ---")
-
-            atual = 0 # Índice que alterna entre 0 e 1 para gerenciar o turno
-            
-            # Loop principal do jogo
+            # Loop de partidas contínuas (Revanche)
             while True:
-                jogador, simbolo, nome_jogador = jogadores[atual]
-                outro_jogador, _, _ = jogadores[1 - atual]
+                tab = Tabuleiro()
+                jogadores = [(j1, "X", nome1), (j2, "O", nome2)]
 
-                # Atualiza a interface (CLI) de ambos os jogadores
-                jogador.receber_mensagem("\n" + tab.exibir())
-                outro_jogador.receber_mensagem("\n" + tab.exibir())
-                outro_jogador.receber_mensagem(f"Aguarde o turno de '{nome_jogador}'")
+                # Envia mensagem de boas-vindas da rodada
+                try:
+                    for jogador, simbolo, nome_proprio in jogadores:
+                        outro_nome = nome2 if simbolo == "X" else nome1
+                        jogador.receber_mensagem(f"\n--- Nova rodada iniciada! {nome_proprio} ('{simbolo}') vs {outro_nome} ---")
+                except Exception as e:
+                    # Falha logo na abertura da rodada
+                    print(f"[ERRO] Falha ao iniciar rodada: {e}")
+                    break
 
-                # --- PONTO DE SINCRONIZAÇÃO (RPC Bloqueante) ---
-                # A thread desta partida no servidor fica pausada (bloqueada) 
-                # aguardando o retorno da tupla (linha, coluna) pelo cliente pela rede.
-                linha, coluna = jogador.fazer_jogada()
+                atual = inicio_rodada # Índice do jogador atual (0 ou 1)
 
-                # Processa o lance usando a classe abstrata de regras
-                if tab.jogar(linha, coluna, simbolo):
-                    vencedor = tab.verificar_vencedor()
-                    
-                    if vencedor:
-                        nome_vencedor = nome1 if vencedor == "X" else nome2
-                        msg = f"\n{tab.exibir()}\nFim de Jogo! Jogador '{nome_vencedor}' ({vencedor}) venceu!"
-                        j1.receber_mensagem(msg)
-                        j2.receber_mensagem(msg)
-                        j1.finalizar() # Sinaliza ao cliente que ele pode encerrar seu terminal
-                        j2.finalizar()
-                        break
-                    elif tab.completo():
-                        msg = f"\n{tab.exibir()}\nFim de Jogo! Empate!"
-                        j1.receber_mensagem(msg)
-                        j2.receber_mensagem(msg)
-                        j1.finalizar()
-                        j2.finalizar()
-                        break
-                        
-                    # Alterna o turno matematicamente (0 vira 1, 1 vira 0)
-                    atual = 1 - atual
+                # Loop de lances de uma partida
+                while True:
+                    jogador, simbolo, nome_jogador = jogadores[atual]
+                    outro_jogador, outro_simbolo, outro_nome = jogadores[1 - atual]
+
+                    # Envia estado do tabuleiro e notificação de turno com nome
+                    try:
+                        jogador.receber_mensagem("\n" + tab.exibir())
+                        outro_jogador.receber_mensagem("\n" + tab.exibir())
+                        outro_jogador.receber_mensagem(f"Aguarde o turno de '{nome_jogador}' ('{simbolo}')...")
+                    except Exception:
+                        # Se falhar ao enviar para o outro_jogador, ele desconectou
+                        tratar_wo(outro_nome, jogador, nome_jogador)
+                        return
+
+                    # Ponto de sincronização: espera a jogada do cliente pela rede
+                    try:
+                        linha, coluna = jogador.fazer_jogada()
+                    except Exception:
+                        # Se o jogador do turno fechou o terminal ou caiu a conexão
+                        tratar_wo(nome_jogador, outro_jogador, outro_nome)
+                        return
+
+                    # Processa o lance
+                    if tab.jogar(linha, coluna, simbolo):
+                        # Informa ao oponente exatamente qual lance foi executado
+                        try:
+                            outro_jogador.receber_mensagem(f">> {nome_jogador} jogou na linha {linha}, coluna {coluna}.")
+                        except Exception:
+                            tratar_wo(outro_nome, jogador, nome_jogador)
+                            return
+
+                        vencedor = tab.verificar_vencedor()
+
+                        if vencedor:
+                            nome_vencedor = nome1 if vencedor == "X" else nome2
+                            placar[nome_vencedor] += 1
+                            msg_vitoria = f"\n{tab.exibir()}\nFim de Jogo! O jogador '{nome_vencedor}' ({vencedor}) venceu!"
+                            try:
+                                j1.receber_mensagem(msg_vitoria)
+                                j2.receber_mensagem(msg_vitoria)
+                            except Exception:
+                                pass
+                            break
+                        elif tab.completo():
+                            placar["empates"] += 1
+                            msg_empate = f"\n{tab.exibir()}\nFim de Jogo! Empate!"
+                            try:
+                                j1.receber_mensagem(msg_empate)
+                                j2.receber_mensagem(msg_empate)
+                            except Exception:
+                                pass
+                            break
+
+                        # Alterna o turno
+                        atual = 1 - atual
+                    else:
+                        try:
+                            jogador.receber_mensagem("Jogada inválida! Posição ocupada ou fora dos limites.")
+                        except Exception:
+                            tratar_wo(nome_jogador, outro_jogador, outro_nome)
+                            return
+
+                # Exibe o placar contínuo atualizado a ambos os jogadores
+                msg_placar = (
+                    f"\n=============================\n"
+                    f"        PLACAR ATUAL\n"
+                    f"  {nome1}: {placar[nome1]} vitória(s)\n"
+                    f"  {nome2}: {placar[nome2]} vitória(s)\n"
+                    f"  Empates: {placar['empates']}\n"
+                    f"============================="
+                )
+                try:
+                    j1.receber_mensagem(msg_placar)
+                    j2.receber_mensagem(msg_placar)
+                except Exception:
+                    pass
+
+                # Consulta sobre a revanche
+                try:
+                    j1.receber_mensagem("\nAguardando confirmação de revanche...")
+                    j2.receber_mensagem("\nAguardando confirmação de revanche...")
+                except Exception:
+                    pass
+
+                # Solicita resposta do jogador 1
+                try:
+                    resp1 = j1.perguntar_revanche()
+                except Exception:
+                    tratar_wo(nome1, j2, nome2)
+                    return
+
+                # Solicita resposta do jogador 2
+                try:
+                    resp2 = j2.perguntar_revanche()
+                except Exception:
+                    tratar_wo(nome2, j1, nome1)
+                    return
+
+                # Avalia as respostas de revanche
+                if resp1 and resp2:
+                    try:
+                        j1.receber_mensagem("\n--- Revanche aceita por ambos! Preparando nova partida... ---")
+                        j2.receber_mensagem("\n--- Revanche aceita por ambos! Preparando nova partida... ---")
+                    except Exception:
+                        pass
+                    # Alterna quem começa a próxima partida para justiça do jogo
+                    inicio_rodada = 1 - inicio_rodada
+                    continue
                 else:
-                    # Se a jogada falhar (posição ocupada), o turno NÃO alterna.
-                    # O mesmo jogador será cobrado novamente no próximo ciclo do while.
-                    jogador.receber_mensagem("Jogada inválida! A posição pode estar ocupada ou fora dos limites.")
-                    
+                    if not resp1 and not resp2:
+                        motivo = "ambos os jogadores recusaram a revanche."
+                    elif not resp1:
+                        motivo = f"o jogador '{nome1}' recusou a revanche."
+                    else:
+                        motivo = f"o jogador '{nome2}' recusou a revanche."
+
+                    msg_encerramento = (
+                        f"\nPartida encerrada: {motivo}\n"
+                        f"Placar Final -> {nome1} {placar[nome1]} x {placar[nome2]} {nome2} (Empates: {placar['empates']})\n"
+                        f"Obrigado por jogar!"
+                    )
+                    try: j1.receber_mensagem(msg_encerramento)
+                    except: pass
+                    try: j2.receber_mensagem(msg_encerramento)
+                    except: pass
+                    try: j1.finalizar()
+                    except: pass
+                    try: j2.finalizar()
+                    except: pass
+                    break
+
         except Exception as e:
-            # Tratamento de resiliência: se um cliente fechar o terminal abruptamente (Broken Pipe),
-            # capturamos o erro na rede e avisamos o jogador restante antes de matar a thread.
-            print(f"[ERRO] Partida interrompida (Erro ou Desconexão): {e}")
-            try: j1.finalizar() 
+            print(f"[ERRO] Erro inesperado durante a partida: {e}")
+            try: j1.finalizar()
             except: pass
             try: j2.finalizar()
             except: pass
+        finally:
+            # Libera os proxies e fecha sockets para evitar vazamento de memória e threads zumbis
+            try: j1._pyroRelease()
+            except: pass
+            try: j2._pyroRelease()
+            except: pass
+            print(f"[SISTEMA] Recursos da partida entre '{nome1}' e '{nome2}' limpos da memória.")
 
 def main():
     # Inicialização do middleware RPC
