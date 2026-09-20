@@ -60,3 +60,40 @@ class MatrixResolver:
         
         current_result_matrix[row_id][column_id] = new_value
         return current_result_matrix
+    
+    def build_rows_and_colums_pairs(
+        first_matrix: list[list[int]],
+        second_matrix: list[list[int]],
+    ) -> list[Payload]:
+        
+        """
+            Constrói uma lista com os pares de linhas e colunas a serem multiplicados
+        """
+        
+        pairs_list = []
+        row_and_column_pair = {}
+
+        second_matrix_rows_length = len(second_matrix)
+        second_matrix_columns_length = len(second_matrix[0])
+
+        for i, row in enumerate(first_matrix):
+            
+            for j in range(second_matrix_columns_length):
+                column = []
+            
+                for k in range (second_matrix_rows_length):
+                    column.append(second_matrix[j][k])
+
+                row_and_column_pair = {
+                    'row_id': i,
+                    'colum_id': j,
+                    'row': row,
+                    'column': column,
+                    'result': None
+                }   
+
+                payload = Payload.from_dict(row_and_column_pair)
+
+                pairs_list.append[payload]
+
+        return pairs_list

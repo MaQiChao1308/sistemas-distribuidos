@@ -16,6 +16,7 @@ class Payload:
             'colum_id': self.column_id,
             'row': self.row,
             'column': self.list,
+            'result': None
         }
     
     def to_json(self) -> str:
