@@ -90,7 +90,8 @@ class MatrixResolver:
                     'row': row,
                     'column': column,
                     'result': None
-                }   
+                }
+                print(f"[DEBUG] row_and_column_pair: {row_and_column_pair}")
 
                 payload = Payload.from_dict(row_and_column_pair)
 
