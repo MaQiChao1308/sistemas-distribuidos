@@ -2,6 +2,7 @@ import socket
 import selectors
 
 from .WorkerServer import WorkerServer
+from dto.payload import Payload
 
 HOST = "127.0.0.1"
 PORT_WORKER_1 = 30010
@@ -10,6 +11,9 @@ PORT_WORKER_3 = 30030
 PORT_WORKER_4 = 30040
 PORT_WORKER_5 = 30050
 
+
+FIRST_MATRIX = [[1,2],[3,4]]
+SECOND_MATRIX = [[5,6],[7,8]]
 
 class WorkerConn:
     def __init__(self, sock: socket.socket, id: int):
@@ -43,7 +47,48 @@ class CordServer:
             worker_data = WorkerConn(sock, i)
             self.selector.register(sock, selectors.EVENT_READ, data=worker_data)
             worker_connections.append(sock)
-            
 
-            
-        
+        return worker_connections
+    
+    def send_message(self, connection: socket.socket, payload_msg: Payload) -> None:
+        """Envia [4 bytes de tamanho][JSON] para o worker."""
+
+        body = payload_msg.to_json().encode()
+        header = len(body).to_bytes(4, 'big')
+
+        connection.sendall(header + body)
+
+    def receive_exact(self, connection: socket.socket, size: int) -> bytes:
+        """
+            Lê exatamente `size` bytes do canal.
+            Pedir sempre o que falta (e não um valor fixo) evita consumir
+            bytes da próxima mensagem que já estejam no buffer do socket.
+        """
+
+        buffer = b""
+
+        while len(buffer) < size:
+            chunk = connection.recv(size - len(buffer))
+
+            if not chunk:
+                raise ConnectionResetError(f"Worker fechou a conexão")
+
+            buffer += chunk
+
+        return buffer
+
+    def receive_message(self, connection: socket.socket) -> Payload:
+        """
+            Lê uma resposta completa do worker.
+            Observação: só chamar depois que o selector sinalizou EVENT_READ
+            nesse socket. Como os sockets são bloqueantes, se for chamado sem
+            dados disponíveis o coordenador trava até o worker responder.
+        """
+
+        # Os 4 primeiros bytes determinam o tamanho do payload enviado
+        header = self.receive_exact(connection, 4)
+        length = int.from_bytes(header, 'big')
+
+        body = self.receive_exact(connection, length)
+
+        return Payload.from_json(body.decode())

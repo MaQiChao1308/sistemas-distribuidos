@@ -24,11 +24,12 @@ class WorkerServer:
     def start_worker(self): 
         
         conn, addr = self.sock.accept()
-
+        
         while True: 
             try:
                 msg = self.recieve_message(conn)
                 result =  self.matrix_resolver.multiply_column_by_row(conn, msg)
+                #TODO : Retornar valor para o coordenador
             except:
                 break
 
