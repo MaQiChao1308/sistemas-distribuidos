@@ -8,15 +8,15 @@ class Payload:
     column_id: int
     row: list[int]
     column: list[int]
-    result: int | None
+    result: int | None = None
 
     def to_dict(self) -> dict:
-        return{ 
+        return{
             'row_id': self.row_id,
-            'colum_id': self.column_id,
+            'column_id': self.column_id,
             'row': self.row,
-            'column': self.list,
-            'result': None
+            'column': self.column,
+            'result': self.result
         }
     
     def to_json(self) -> str:
