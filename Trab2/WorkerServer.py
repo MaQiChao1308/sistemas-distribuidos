@@ -29,26 +29,30 @@ class WorkerServer:
 
 
     def start_worker(self):
-
-        # Bloqueia até o coordenador conectar
-        conn, addr = self.sock.accept()
-        print(f"[WORKER {self.port}] Coordenador conectado: {addr}")
-
         try:
             while True:
-                payload = self.receive_message(conn)
+                # Bloqueia até o coordenador conectar
+                conn, addr = self.sock.accept()
+                print(f"[WORKER {self.port}] Coordenador conectado: {addr}")
 
-                payload.result = self.matrix_resolver.multiply_column_by_row(payload)
-                print(
-                    f"[WORKER {self.port}] linha {payload.row_id} x coluna {payload.column_id}"
-                    f" = {payload.result}"
-                )
+                try:
+                    while True:
+                        payload = self.receive_message(conn)
 
-                self.send_message(conn, payload)
-        except ConnectionResetError as error:
-            print(f"[WORKER {self.port}] Encerrando: {error}")
+                        payload.result = self.matrix_resolver.multiply_column_by_row(payload)
+                        print(
+                            f"[WORKER {self.port}] linha {payload.row_id} x coluna {payload.column_id}"
+                            f" = {payload.result}"
+                        )
+
+                        self.send_message(conn, payload)
+                except ConnectionResetError:
+                    print(f"[WORKER {self.port}] Coordenador desconectado")
+                finally:
+                    conn.close()
+        except KeyboardInterrupt:
+            print(f"\n[WORKER {self.port}] Encerrando")
         finally:
-            conn.close()
             self.sock.close()
 
     def send_message(self, connection: socket.socket, payload_msg: Payload) -> None:
