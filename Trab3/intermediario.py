@@ -1,16 +1,16 @@
+
+from collections import defaultdict
+import Pyro5.api
+import Pyro5.errors
+
 """
-intermidiate.py - Intermediário (Broker) Publish-Subscribe com Pyro5
+intermediario.py - Intermediário (Broker) Publish-Subscribe com Pyro5
 
 Responsável por:
 1. Gerenciar tópicos (criar, listar).
 2. Gerenciar registros de subscribers e suas inscrições nos tópicos.
 3. Receber mensagens dos publishers e encaminhá-las aos subscribers interessados (via callback remoto).
 """
-
-from collections import defaultdict
-import Pyro5.api
-import Pyro5.errors
-
 
 @Pyro5.api.expose
 class Intermediario:
@@ -55,7 +55,7 @@ class Intermediario:
         id_subscriber = str(id_subscriber).strip()
 
         if uri_callback:
-            self.subscribers[id_subscriber] = uri_callback
+            self.subscribers[id_subscriber] = str(uri_callback)
             print(f"[Intermediário] Subscriber '{id_subscriber}' registrado com callback direto: {uri_callback}")
         else:
             # Caso não passe a URI diretamente, tenta localizar no Pyro Name Server
@@ -65,10 +65,10 @@ class Intermediario:
                     uri = ns.lookup(f"subscriber.{id_subscriber}")
                 except Exception:
                     uri = ns.lookup(id_subscriber)
-                self.subscribers[id_subscriber] = uri
+                self.subscribers[id_subscriber] = str(uri)
                 print(f"[Intermediário] Subscriber '{id_subscriber}' localizado via Name Server: {uri}")
-            except Exception:
-                print(f"[Intermediário] Erro: Não foi possível obter o callback de '{id_subscriber}'.")
+            except Exception as err:
+                print(f"[Intermediário] Erro: Não foi possível obter o callback de '{id_subscriber}': {err}")
                 return False
         return True
 

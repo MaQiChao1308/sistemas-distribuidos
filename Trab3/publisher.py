@@ -1,3 +1,8 @@
+
+import sys
+import Pyro5.api
+import Pyro5.errors
+
 """
 publisher.py - Processo Publisher (Publicador) com Pyro5
 
@@ -7,11 +12,6 @@ Responsável por:
 3. Publicar mensagens informando seu id_publisher, o tópico e a mensagem.
 4. Operar totalmente desacoplado dos subscribers (não conhece quem são nem quantos são).
 """
-
-import sys
-import Pyro5.api
-import Pyro5.errors
-
 
 def obter_intermediario():
     """
@@ -28,7 +28,7 @@ def obter_intermediario():
         print(f"Motivo: {err}")
         print("Certifique-se de que:")
         print(" 1. O Name Server está rodando: pyro5-ns")
-        print(" 2. O Intermediário está rodando: python3 intermidiate.py\n")
+        print(" 2. O Intermediário está rodando: python3 intermediario.py\n")
         return None
 
 
