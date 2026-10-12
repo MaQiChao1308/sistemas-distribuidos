@@ -1,0 +1,8 @@
+[09:42:26.884] [P2] [RECEIVE] Evento #1 | Relógio: [P1:0, P2:1, P3:1, P4:0] | Recebido de P3 (Evento #1 de P3). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'
+[09:42:26.887] [P2] [LOCAL] Evento #2 | Relógio: [P1:0, P2:2, P3:1, P4:0] | Operação local 'Exportação de snapshot de memória' concluída
+[09:42:27.336] [P2] [RECEIVE] Evento #3 | Relógio: [P1:1, P2:3, P3:1, P4:0] | Recebido de P1 (Evento #1 de P1). Atraso simulado: 0.00s | Conteúdo: 'Exportação de snapshot de memória'
+[09:42:27.595] [P2] [RECEIVE] Evento #4 | Relógio: [P1:1, P2:4, P3:1, P4:2] | Recebido de P4 (Evento #2 de P4). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'
+[09:42:28.678] [P2] [RECEIVE] Evento #5 | Relógio: [P1:5, P2:5, P3:1, P4:2] | Recebido de P1 (Evento #5 de P1). Atraso simulado: 0.00s | Conteúdo: 'Compactação de arquivo de log'
+[09:42:28.809] [P2] [LOCAL] Evento #6 | Relógio: [P1:5, P2:6, P3:1, P4:2] | Operação local 'Validação de assinatura digital' concluída
+[09:42:28.973] [P2] [RECEIVE] Evento #7 | Relógio: [P1:5, P2:7, P3:1, P4:5] | Recebido de P4 (Evento #5 de P4). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'
+[09:42:29.477] [P2] [RECEIVE] Evento #8 | Relógio: [P1:5, P2:8, P3:4, P4:5] | Recebido de P3 (Evento #4 de P3). Atraso simulado: 0.00s | Conteúdo: 'Processamento de lote de dados'

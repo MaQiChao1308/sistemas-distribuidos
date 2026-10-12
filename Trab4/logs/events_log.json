@@ -1,0 +1,530 @@
+[
+  {
+    "process_id": "P1",
+    "event_number": 1,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:25.982",
+    "timestamp_epoch": 1791463345.9823465,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 0,
+      "P3": 0,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:1, P2:0, P3:0, P4:0]",
+    "details": "Operação local 'Exportação de snapshot de memória' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P3",
+    "event_number": 1,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:26.370",
+    "timestamp_epoch": 1791463346.3700867,
+    "vector_clock": {
+      "P1": 0,
+      "P2": 0,
+      "P3": 1,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:0, P2:0, P3:1, P4:0]",
+    "details": "Operação local 'Verificação de consistência de estado' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P3",
+    "event_number": 2,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:26.689",
+    "timestamp_epoch": 1791463346.6897244,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 0,
+      "P3": 2,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:1, P2:0, P3:2, P4:0]",
+    "details": "Recebido de P1 (Evento #1 de P1). Atraso simulado: 0.00s | Conteúdo: 'Exportação de snapshot de memória'",
+    "sender_id": "P1"
+  },
+  {
+    "process_id": "P4",
+    "event_number": 1,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:26.819",
+    "timestamp_epoch": 1791463346.8196476,
+    "vector_clock": {
+      "P1": 0,
+      "P2": 0,
+      "P3": 1,
+      "P4": 1
+    },
+    "vector_clock_str": "[P1:0, P2:0, P3:1, P4:1]",
+    "details": "Recebido de P3 (Evento #1 de P3). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'",
+    "sender_id": "P3"
+  },
+  {
+    "process_id": "P2",
+    "event_number": 1,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:26.884",
+    "timestamp_epoch": 1791463346.8842506,
+    "vector_clock": {
+      "P1": 0,
+      "P2": 1,
+      "P3": 1,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:0, P2:1, P3:1, P4:0]",
+    "details": "Recebido de P3 (Evento #1 de P3). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'",
+    "sender_id": "P3"
+  },
+  {
+    "process_id": "P2",
+    "event_number": 2,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:26.887",
+    "timestamp_epoch": 1791463346.8875976,
+    "vector_clock": {
+      "P1": 0,
+      "P2": 2,
+      "P3": 1,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:0, P2:2, P3:1, P4:0]",
+    "details": "Operação local 'Exportação de snapshot de memória' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P4",
+    "event_number": 2,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:27.049",
+    "timestamp_epoch": 1791463347.0497394,
+    "vector_clock": {
+      "P1": 0,
+      "P2": 0,
+      "P3": 1,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:0, P2:0, P3:1, P4:2]",
+    "details": "Operação local 'Verificação de consistência de estado' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P4",
+    "event_number": 3,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:27.051",
+    "timestamp_epoch": 1791463347.051943,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 0,
+      "P3": 1,
+      "P4": 3
+    },
+    "vector_clock_str": "[P1:1, P2:0, P3:1, P4:3]",
+    "details": "Recebido de P1 (Evento #1 de P1). Atraso simulado: 0.00s | Conteúdo: 'Exportação de snapshot de memória'",
+    "sender_id": "P1"
+  },
+  {
+    "process_id": "P2",
+    "event_number": 3,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:27.336",
+    "timestamp_epoch": 1791463347.3369656,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 3,
+      "P3": 1,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:1, P2:3, P3:1, P4:0]",
+    "details": "Recebido de P1 (Evento #1 de P1). Atraso simulado: 0.00s | Conteúdo: 'Exportação de snapshot de memória'",
+    "sender_id": "P1"
+  },
+  {
+    "process_id": "P2",
+    "event_number": 4,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:27.595",
+    "timestamp_epoch": 1791463347.595304,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 4,
+      "P3": 1,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:1, P2:4, P3:1, P4:2]",
+    "details": "Recebido de P4 (Evento #2 de P4). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'",
+    "sender_id": "P4"
+  },
+  {
+    "process_id": "P3",
+    "event_number": 3,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:27.746",
+    "timestamp_epoch": 1791463347.746594,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 2,
+      "P3": 3,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:1, P2:2, P3:3, P4:0]",
+    "details": "Recebido de P2 (Evento #2 de P2). Atraso simulado: 0.00s | Conteúdo: 'Exportação de snapshot de memória'",
+    "sender_id": "P2"
+  },
+  {
+    "process_id": "P1",
+    "event_number": 2,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:27.748",
+    "timestamp_epoch": 1791463347.7490067,
+    "vector_clock": {
+      "P1": 2,
+      "P2": 0,
+      "P3": 1,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:2, P2:0, P3:1, P4:0]",
+    "details": "Recebido de P3 (Evento #1 de P3). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'",
+    "sender_id": "P3"
+  },
+  {
+    "process_id": "P1",
+    "event_number": 3,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:27.910",
+    "timestamp_epoch": 1791463347.9110208,
+    "vector_clock": {
+      "P1": 3,
+      "P2": 0,
+      "P3": 1,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:3, P2:0, P3:1, P4:2]",
+    "details": "Recebido de P4 (Evento #2 de P4). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'",
+    "sender_id": "P4"
+  },
+  {
+    "process_id": "P1",
+    "event_number": 4,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:28.111",
+    "timestamp_epoch": 1791463348.1112354,
+    "vector_clock": {
+      "P1": 4,
+      "P2": 2,
+      "P3": 1,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:4, P2:2, P3:1, P4:2]",
+    "details": "Recebido de P2 (Evento #2 de P2). Atraso simulado: 0.00s | Conteúdo: 'Exportação de snapshot de memória'",
+    "sender_id": "P2"
+  },
+  {
+    "process_id": "P1",
+    "event_number": 5,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:28.179",
+    "timestamp_epoch": 1791463348.1798205,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 2,
+      "P3": 1,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:5, P2:2, P3:1, P4:2]",
+    "details": "Operação local 'Compactação de arquivo de log' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P4",
+    "event_number": 4,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:28.204",
+    "timestamp_epoch": 1791463348.2048867,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 2,
+      "P3": 1,
+      "P4": 4
+    },
+    "vector_clock_str": "[P1:1, P2:2, P3:1, P4:4]",
+    "details": "Recebido de P2 (Evento #2 de P2). Atraso simulado: 0.00s | Conteúdo: 'Exportação de snapshot de memória'",
+    "sender_id": "P2"
+  },
+  {
+    "process_id": "P4",
+    "event_number": 5,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:28.392",
+    "timestamp_epoch": 1791463348.3920963,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 2,
+      "P3": 1,
+      "P4": 5
+    },
+    "vector_clock_str": "[P1:1, P2:2, P3:1, P4:5]",
+    "details": "Operação local 'Verificação de consistência de estado' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P3",
+    "event_number": 4,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:28.495",
+    "timestamp_epoch": 1791463348.495877,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 2,
+      "P3": 4,
+      "P4": 0
+    },
+    "vector_clock_str": "[P1:1, P2:2, P3:4, P4:0]",
+    "details": "Operação local 'Processamento de lote de dados' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P3",
+    "event_number": 5,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:28.525",
+    "timestamp_epoch": 1791463348.5259442,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 2,
+      "P3": 5,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:1, P2:2, P3:5, P4:2]",
+    "details": "Recebido de P4 (Evento #2 de P4). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'",
+    "sender_id": "P4"
+  },
+  {
+    "process_id": "P2",
+    "event_number": 5,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:28.678",
+    "timestamp_epoch": 1791463348.678609,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 5,
+      "P3": 1,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:5, P2:5, P3:1, P4:2]",
+    "details": "Recebido de P1 (Evento #5 de P1). Atraso simulado: 0.00s | Conteúdo: 'Compactação de arquivo de log'",
+    "sender_id": "P1"
+  },
+  {
+    "process_id": "P2",
+    "event_number": 6,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:28.809",
+    "timestamp_epoch": 1791463348.809688,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 6,
+      "P3": 1,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:5, P2:6, P3:1, P4:2]",
+    "details": "Operação local 'Validação de assinatura digital' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P3",
+    "event_number": 6,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:28.918",
+    "timestamp_epoch": 1791463348.918741,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 2,
+      "P3": 6,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:5, P2:2, P3:6, P4:2]",
+    "details": "Recebido de P1 (Evento #5 de P1). Atraso simulado: 0.00s | Conteúdo: 'Compactação de arquivo de log'",
+    "sender_id": "P1"
+  },
+  {
+    "process_id": "P1",
+    "event_number": 6,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:28.937",
+    "timestamp_epoch": 1791463348.9377346,
+    "vector_clock": {
+      "P1": 6,
+      "P2": 2,
+      "P3": 4,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:6, P2:2, P3:4, P4:2]",
+    "details": "Recebido de P3 (Evento #4 de P3). Atraso simulado: 0.00s | Conteúdo: 'Processamento de lote de dados'",
+    "sender_id": "P3"
+  },
+  {
+    "process_id": "P2",
+    "event_number": 7,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:28.973",
+    "timestamp_epoch": 1791463348.973499,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 7,
+      "P3": 1,
+      "P4": 5
+    },
+    "vector_clock_str": "[P1:5, P2:7, P3:1, P4:5]",
+    "details": "Recebido de P4 (Evento #5 de P4). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'",
+    "sender_id": "P4"
+  },
+  {
+    "process_id": "P4",
+    "event_number": 6,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:29.112",
+    "timestamp_epoch": 1791463349.112747,
+    "vector_clock": {
+      "P1": 1,
+      "P2": 2,
+      "P3": 4,
+      "P4": 6
+    },
+    "vector_clock_str": "[P1:1, P2:2, P3:4, P4:6]",
+    "details": "Recebido de P3 (Evento #4 de P3). Atraso simulado: 0.00s | Conteúdo: 'Processamento de lote de dados'",
+    "sender_id": "P3"
+  },
+  {
+    "process_id": "P1",
+    "event_number": 7,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:29.123",
+    "timestamp_epoch": 1791463349.1231616,
+    "vector_clock": {
+      "P1": 7,
+      "P2": 6,
+      "P3": 4,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:7, P2:6, P3:4, P4:2]",
+    "details": "Recebido de P2 (Evento #6 de P2). Atraso simulado: 0.00s | Conteúdo: 'Validação de assinatura digital'",
+    "sender_id": "P2"
+  },
+  {
+    "process_id": "P1",
+    "event_number": 8,
+    "event_type": "LOCAL",
+    "timestamp_iso": "09:42:29.454",
+    "timestamp_epoch": 1791463349.4540708,
+    "vector_clock": {
+      "P1": 8,
+      "P2": 6,
+      "P3": 4,
+      "P4": 2
+    },
+    "vector_clock_str": "[P1:8, P2:6, P3:4, P4:2]",
+    "details": "Operação local 'Exportação de snapshot de memória' concluída",
+    "sender_id": null
+  },
+  {
+    "process_id": "P2",
+    "event_number": 8,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:29.477",
+    "timestamp_epoch": 1791463349.47756,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 8,
+      "P3": 4,
+      "P4": 5
+    },
+    "vector_clock_str": "[P1:5, P2:8, P3:4, P4:5]",
+    "details": "Recebido de P3 (Evento #4 de P3). Atraso simulado: 0.00s | Conteúdo: 'Processamento de lote de dados'",
+    "sender_id": "P3"
+  },
+  {
+    "process_id": "P4",
+    "event_number": 7,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:29.529",
+    "timestamp_epoch": 1791463349.5295844,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 6,
+      "P3": 4,
+      "P4": 7
+    },
+    "vector_clock_str": "[P1:5, P2:6, P3:4, P4:7]",
+    "details": "Recebido de P2 (Evento #6 de P2). Atraso simulado: 0.00s | Conteúdo: 'Validação de assinatura digital'",
+    "sender_id": "P2"
+  },
+  {
+    "process_id": "P4",
+    "event_number": 8,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:29.653",
+    "timestamp_epoch": 1791463349.653114,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 6,
+      "P3": 4,
+      "P4": 8
+    },
+    "vector_clock_str": "[P1:5, P2:6, P3:4, P4:8]",
+    "details": "Recebido de P1 (Evento #5 de P1). Atraso simulado: 0.00s | Conteúdo: 'Compactação de arquivo de log'",
+    "sender_id": "P1"
+  },
+  {
+    "process_id": "P3",
+    "event_number": 7,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:29.813",
+    "timestamp_epoch": 1791463349.813733,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 2,
+      "P3": 7,
+      "P4": 5
+    },
+    "vector_clock_str": "[P1:5, P2:2, P3:7, P4:5]",
+    "details": "Recebido de P4 (Evento #5 de P4). Atraso simulado: 0.00s | Conteúdo: 'Verificação de consistência de estado'",
+    "sender_id": "P4"
+  },
+  {
+    "process_id": "P3",
+    "event_number": 8,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:29.868",
+    "timestamp_epoch": 1791463349.8689194,
+    "vector_clock": {
+      "P1": 5,
+      "P2": 6,
+      "P3": 8,
+      "P4": 5
+    },
+    "vector_clock_str": "[P1:5, P2:6, P3:8, P4:5]",
+    "details": "Recebido de P2 (Evento #6 de P2). Atraso simulado: 0.00s | Conteúdo: 'Validação de assinatura digital'",
+    "sender_id": "P2"
+  },
+  {
+    "process_id": "P3",
+    "event_number": 9,
+    "event_type": "RECEIVE",
+    "timestamp_iso": "09:42:29.874",
+    "timestamp_epoch": 1791463349.8749068,
+    "vector_clock": {
+      "P1": 8,
+      "P2": 6,
+      "P3": 9,
+      "P4": 5
+    },
+    "vector_clock_str": "[P1:8, P2:6, P3:9, P4:5]",
+    "details": "Recebido de P1 (Evento #8 de P1). Atraso simulado: 0.00s | Conteúdo: 'Exportação de snapshot de memória'",
+    "sender_id": "P1"
+  }
+]
